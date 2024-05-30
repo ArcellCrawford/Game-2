@@ -17,6 +17,8 @@ class Gamescene extends Phaser.Scene {
 
     create() {
         this.physics.world.setBounds(0,0,1440,800);
+        //sets up the background 
+        this.background = this.add.tileSprite(0, 0, 1400, 800, 'background').setOrigin(0,0)
         //laser group for player and enemy
         this.PlayerlaserGroup = new LaserGroup(this);
         this.EnemylaserGroup = new EnemyLaserGroup(this);

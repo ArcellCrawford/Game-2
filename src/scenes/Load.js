@@ -45,7 +45,7 @@ class Load extends Phaser.Scene {
 
 
          // ...and pass to the next Scene
-         this.scene.start("gameScene");
+         this.scene.start("mainMenu");
     }
 
     // Never get here since a new scene is started in create()

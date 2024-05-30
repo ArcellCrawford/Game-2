@@ -16,12 +16,12 @@ let config = {
             }
         }
     },
-    width: 1440,
-    height: 900,
-    scene: [Load, Gamescene]
+    width: 1400,
+    height: 800,
+    scene: [Load, MainMenu, Gamescene]
 }
 
-var cursors;
+var cursors
 const SCALE = 2.0;
 var my = {sprite: {}, text: {}};
 

@@ -44,7 +44,7 @@ class EnemyLaser extends Phaser.Physics.Arcade.Sprite {
 	}
     //fire method for laser 
     fire(x, y) {
-        
+        if(y>= 180){
         this.body.reset(x+ 45, y+70);
         setTimeout(() => {
 
@@ -52,7 +52,7 @@ class EnemyLaser extends Phaser.Physics.Arcade.Sprite {
         }, "1000");
             this.setVisible(true);
      
-            this.setVelocityY(+900);       
+            this.setVelocityY(+900); }      
 	}
 
     

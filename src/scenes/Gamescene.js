@@ -37,7 +37,7 @@ class Gamescene extends Phaser.Scene {
         my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height , "ship_characters", "cockpitBlue_0.png").setScale(SCALE)
         my.sprite.player.setCollideWorldBounds(true);
         my.sprite.player.flipY = true;
-        my.sprite.player.health = 5
+        my.sprite.player.health = 1
         // set up enemy
         this.enemy1 = new Enemy1(this,Math.floor(Math.random() * (this.max1 - this.min + 1)) + this.min, -200,"Enemy", 0,30).setOrigin(0,0)
         this.physics.add.existing(this.enemy1)
@@ -65,15 +65,13 @@ class Gamescene extends Phaser.Scene {
        }         
     }
 
-//enemy collision
+//enemy collision destroy enemy, set isDestroyed to true then creates more instances
     EnemyCollision = (enemy, laser1) =>{
      enemy.destroy()
-     
-     console.log(this.isDestroyed) 
      this.isDestroyed = true         
      
     }
-    
+
 //player shoots laser
     shootLaser() {
         this.PlayerlaserGroup.fireLaser(my.sprite.player.x, my.sprite.player.y - 20); 
@@ -88,6 +86,19 @@ class Gamescene extends Phaser.Scene {
         } 
     }
 
+    createInstance(){
+        if (this.isDestroyed == true) {
+            // Create a new instance of the enemy class
+            this.enemy1 = new Enemy1(this, Math.floor(Math.random() * (this.max1 - this.min + 1)) + this.min, -200, "Enemy", 0, 30).setOrigin(0, 0);
+            this.physics.add.existing(this.enemy1);
+            this.physics.add.collider(this.enemy1, this.PlayerlaserGroup,this.EnemyCollision);
+
+    
+            // Reset the flag
+            this.isDestroyed = false;
+        }
+    }
+
     //update loop
     update() {
           // updates enemy position
@@ -96,6 +107,9 @@ class Gamescene extends Phaser.Scene {
        this.enemy1.update() 
          // handles enemy shooting
          this.shootLaserEnemy(this.enemy1)
+
+         this.createInstance();
+
        
          
         //The following lines handle player movement

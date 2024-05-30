@@ -6,19 +6,19 @@ class Gamescene extends Phaser.Scene {
     init() {
         // variables and settings
         this.ACCELERATION = 400;
-        this.DRAG = 300;    // DRAG < ACCELERATION = icy slide
+        this.DRAG = 200;   
         this.physics.world.gravity.y = 0;
         this.score = 0
-        this.text = this.add.text(16 + this.cameras.main.scrollX, this.cameras.main.scrollY, 'Score:' + this.score, { fontFamily: 'Arial', fontSize: 18, color: '#ffffff' });
-        this.isDestroyed = false
         this.numberofenemies = 1
-       
+        this.gameOver = false
     }
 
     create() {
         this.physics.world.setBounds(0,0,1440,800);
         //sets up the background 
         this.background = this.add.tileSprite(0, 0, 1400, 800, 'background').setOrigin(0,0)
+        this.text = this.add.text(16 + this.cameras.main.scrollX, this.cameras.main.scrollY, 'Score:' + this.score, { fontFamily: 'Arial', fontSize: 18, color: '#ffffff' }).setOrigin(-.3);
+        this.isDestroyed = false
         //laser group for player and enemy
         this.PlayerlaserGroup = new LaserGroup(this);
         this.EnemylaserGroup = new EnemyLaserGroup(this);
@@ -60,11 +60,12 @@ class Gamescene extends Phaser.Scene {
     }
 
 //handles collision between enemy laser and player
-    PlayerCollision(player,laser){
+    PlayerCollision = (player,laser) =>{
        my.sprite.player.health -=1 
        console.log(my.sprite.player.health)
        if(my.sprite.player.health <= 0){
         console.log('Game Over')
+        this.gameOver = true
        }         
     }
 
@@ -147,6 +148,9 @@ class Gamescene extends Phaser.Scene {
           
         }
         // The following lines handle shooting
+        if(this.gameOver == true){
+            this.scene.start('gameOver', {score: this.score})
+           }         
 
     }
 }

@@ -11,6 +11,7 @@ class Gamescene extends Phaser.Scene {
         this.score = 0
         this.text = this.add.text(16 + this.cameras.main.scrollX, this.cameras.main.scrollY, 'Score:' + this.score, { fontFamily: 'Arial', fontSize: 18, color: '#ffffff' });
         this.isDestroyed = false
+        this.numberofenemies = 1
        
     }
 
@@ -68,6 +69,9 @@ class Gamescene extends Phaser.Scene {
 //enemy collision destroy enemy, set isDestroyed to true then creates more instances
     EnemyCollision = (enemy, laser1) =>{
      enemy.destroy()
+     this.score += 1
+     this.text.setText('Score: ' + this.score)
+     console.log(this.score)
      this.isDestroyed = true         
      
     }

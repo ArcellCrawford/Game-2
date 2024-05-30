@@ -16,7 +16,7 @@ class Enemy1 extends Phaser.Physics.Arcade.Sprite{
             //needs to go also check this.move
             if(this.x>= game.config.width - 100 && this.move == false){
                 this.move = true
-                console.log('true')
+              
             }
             //checks this move and sets it to false if x is less than 100
             //moving it in the other direction

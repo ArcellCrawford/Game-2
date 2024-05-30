@@ -10,6 +10,8 @@ class Gamescene extends Phaser.Scene {
         this.physics.world.gravity.y = 0;
         this.score = 0
         this.text = this.add.text(16 + this.cameras.main.scrollX, this.cameras.main.scrollY, 'Score:' + this.score, { fontFamily: 'Arial', fontSize: 18, color: '#ffffff' });
+        this.isDestroyed = false
+       
     }
 
     create() {
@@ -53,11 +55,7 @@ class Gamescene extends Phaser.Scene {
         }, this);
 
     }
-//player shoots laser
-    shootLaser() {
-        this.PlayerlaserGroup.fireLaser(my.sprite.player.x, my.sprite.player.y - 20);
-     
-    }
+
 //handles collision between enemy laser and player
     PlayerCollision(player,laser){
        my.sprite.player.health -=1 
@@ -66,22 +64,40 @@ class Gamescene extends Phaser.Scene {
         console.log('Game Over')
        }         
     }
+
 //enemy collision
-    EnemyCollision(enemy, laser1){
+    EnemyCollision = (enemy, laser1) =>{
      enemy.destroy()
+     
+     console.log(this.isDestroyed) 
+     this.isDestroyed = true         
+     
+    }
     
-     console.log('enemy destroyed')   
+//player shoots laser
+    shootLaser() {
+        this.PlayerlaserGroup.fireLaser(my.sprite.player.x, my.sprite.player.y - 20); 
+    }
+//enemy shooting
+    shootLaserEnemy(en) {
+        
+        if(this.isDestroyed == false){
+        this.EnemylaserGroup.fireLaser(en.x,en.y - 20);}
+        else{
+            
+        } 
     }
 
     //update loop
     update() {
+          // updates enemy position
        
-              // updates enemy position
-        this.enemy1.update()
-        // handles enemy shooting
-        this.EnemylaserGroup.fireLaser(this.enemy1.x, this.enemy1.y - 20);
         
-      
+       this.enemy1.update() 
+         // handles enemy shooting
+         this.shootLaserEnemy(this.enemy1)
+       
+         
         //The following lines handle player movement
         if(cursors.left.isDown) {
            

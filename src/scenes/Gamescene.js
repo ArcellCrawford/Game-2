@@ -8,11 +8,15 @@ class Gamescene extends Phaser.Scene {
         this.ACCELERATION = 400;
         this.DRAG = 300;    // DRAG < ACCELERATION = icy slide
         this.physics.world.gravity.y = 0;
-        
+        this.score = 0
+        this.text = this.add.text(16 + this.cameras.main.scrollX, this.cameras.main.scrollY, 'Score:' + this.score, { fontFamily: 'Arial', fontSize: 18, color: '#ffffff' });
     }
 
     create() {
-     
+        this.physics.world.setBounds(0,0,1440,800);
+        //laser group for player and enemy
+        this.PlayerlaserGroup = new LaserGroup(this);
+        this.EnemylaserGroup = new EnemyLaserGroup(this);
         // Create a layer
        // this.groundLayer = this.map.createLayer("Ground-n-Platforms", this.tileset, 0, 0);
        // this.groundLayer.setScale(2.0);
@@ -21,16 +25,24 @@ class Gamescene extends Phaser.Scene {
         // this.groundLayer.setCollisionByProperty({
         //     collides: true
         // });
+        //max and mins for location placement
+        this.max = 800 
+        this.min = 200
 
+        this.max1 = 700 
+        this.min1 = 300
         // set up player avatar
-        my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height/1.5, "platformer_characters", "tile_0000.png").setScale(SCALE)
+        my.sprite.player = this.physics.add.sprite(game.config.width/4, game.config.height , "ship_characters", "cockpitBlue_0.png").setScale(SCALE)
         my.sprite.player.setCollideWorldBounds(true);
         my.sprite.player.flipY = true;
-
-
+        my.sprite.player.health = 5
+        // set up enemy
+        this.enemy1 = new Enemy1(this,Math.floor(Math.random() * (this.max1 - this.min + 1)) + this.min, -200,"Enemy", 0,30).setOrigin(0,0)
+        this.physics.add.existing(this.enemy1)
         // Enable collision handling
         this.physics.add.collider(my.sprite.player, this.groundLayer);
-
+        this.physics.add.collider(my.sprite.player, this.EnemylaserGroup,this.PlayerCollision);
+        this.physics.add.collider(this.enemy1, this.PlayerlaserGroup,this.EnemyCollision);
         // set up Phaser-provided cursor key input
         cursors = this.input.keyboard.createCursorKeys();
 
@@ -41,13 +53,40 @@ class Gamescene extends Phaser.Scene {
         }, this);
 
     }
+//player shoots laser
+    shootLaser() {
+        this.PlayerlaserGroup.fireLaser(my.sprite.player.x, my.sprite.player.y - 20);
+     
+    }
+//handles collision between enemy laser and player
+    PlayerCollision(player,laser){
+       my.sprite.player.health -=1 
+       console.log(my.sprite.player.health)
+       if(my.sprite.player.health <= 0){
+        console.log('Game Over')
+       }         
+    }
+//enemy collision
+    EnemyCollision(enemy, laser1){
+     enemy.destroy()
+    
+     console.log('enemy destroyed')   
+    }
 
+    //update loop
     update() {
+       
+              // updates enemy position
+        this.enemy1.update()
+        // handles enemy shooting
+        this.EnemylaserGroup.fireLaser(this.enemy1.x, this.enemy1.y - 20);
+        
+      
         //The following lines handle player movement
         if(cursors.left.isDown) {
            
             my.sprite.player.body.setAccelerationX(-this.ACCELERATION);
-            my.sprite.player.resetFlip();
+            
             my.sprite.player.anims.play('ship', true);
         } else if(cursors.right.isDown) {
             
@@ -56,14 +95,7 @@ class Gamescene extends Phaser.Scene {
             my.sprite.player.anims.play('ship', true);
             
         } 
-        else if(cursors.down.isDown){
-            my.sprite.player.body.setAccelerationY(this.ACCELERATION);
-            
-        }
-        else if(cursors.up.isDown){
-            my.sprite.player.body.setAccelerationY(-this.ACCELERATION);
-           
-        }
+      
             else {
           
             my.sprite.player.anims.play('ship');
@@ -72,9 +104,13 @@ class Gamescene extends Phaser.Scene {
         if(!my.sprite.player.body.blocked.down) {
             my.sprite.player.anims.play('ship');
         }
-        if(my.sprite.player.body.blocked.down && Phaser.Input.Keyboard.JustDown(cursors.up)) {
-           
-
+      
+        //player shooting
+        if(cursors.space.isDown) {
+           this.shootLaser();
+          
         }
+        // The following lines handle shooting
+
     }
 }

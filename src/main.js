@@ -18,7 +18,7 @@ let config = {
     },
     width: 1400,
     height: 800,
-    scene: [Load, MainMenu, Gamescene,GameOver]
+    scene: [Load,MainMenu ,Gamescene,GameOver]
 }
 
 var cursors
